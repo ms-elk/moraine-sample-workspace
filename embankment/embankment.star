@@ -10,7 +10,7 @@ load(
     "BED_WIDTH",
     "CREST_HEIGHT",
     "CREST_WIDTH",
-    "METER_GAUGE",
+    "STANDARD_GAUGE",
     "STONE_SINK_MAX",
     "STONE_SIZE_MAX",
     "STONE_SIZE_MIN",
@@ -94,8 +94,8 @@ for name, seed in [["flank_front", 102], ["flank_back", 103]]:
     )
 
 # Track: transforms stay authored, since no op places a referenced kit.
-rails = mo.asset_ref(project = "track", output = "rails", id = "track_rails", overrides = {"gauge": METER_GAUGE})
-sleepers = mo.asset_ref(project = "track", output = "sleepers", id = "track_sleepers", overrides = {"gauge": METER_GAUGE})
+rails = mo.asset_ref(project = "track", output = "rails", id = "track_rails", overrides = {"gauge": STANDARD_GAUGE})
+sleepers = mo.asset_ref(project = "track", output = "sleepers", id = "track_sleepers", overrides = {"gauge": STANDARD_GAUGE})
 rails = mo.transform(rails, id = "rails_on_bed", translate = [0.0, bed_top, 0.0])
 sleepers = mo.transform(sleepers, id = "sleepers_on_bed", translate = [0.0, bed_top, 0.0])
 

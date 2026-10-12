@@ -10,13 +10,13 @@ BAND_THICKNESS = 0.02
 STANDARD_GAUGE = 1.435
 PANEL_LENGTH = 12.0
 RAIL_HEAD_CLEARANCE = 0.75
-BAY_WIDTH = 4.0
-STANDARD_BAYS = 3
-END_BAY_WIDTH = 2.0
+BAY_WIDTH = 3.5
+STANDARD_BAYS = 4
+END_BAY_WIDTH = 1.0
 CANOPY_HALF_SPAN = 8.0
 ROOF_UNDERSIDE = 3.00
 LAMP_HEIGHT = 4.00
-LAMP_X = [-9.0, -3.0, 3.0, 9.0]
+LAMP_X = [-11.0, -9.0, 9.0, 11.0]
 LAMP_INSET = 0.50
 LAMP_CAST = 0.05
 SLEEPER_SEAT_AREA = 0.25 * 2.60
@@ -144,3 +144,6 @@ for side in ["back", "front"]:
         every = ["stair_steps", "stair_stringer_" + side],
         min_area = STEP_SEAT_AREA,
     )
+
+# Lanterns clear of the canopy roof
+mo.assert_clearance(id = "lanterns_clear_roofs", outputs = ["lamp_lanterns", "all_roofs"], min = 0.50)

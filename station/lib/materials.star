@@ -18,7 +18,7 @@ def platform_edge(id, mesh):
     return mo.material(mesh, id = id, name = "platform_edge", base_color = [0.85, 0.75, 0.15], metallic = 0.0, roughness = 0.70)
 
 def canopy_roof(id, mesh):
-    return mo.material(mesh, id = id, name = "canopy_roof", base_color = [0.45, 0.16, 0.10], metallic = 0.0, roughness = 0.60)
+    return mo.material(mesh, id = id, name = "canopy_roof", base_color = [0.20, 0.20, 0.22], metallic = 0.0, roughness = 0.60)
 
 def cast_iron(id, mesh):
     return mo.material(mesh, id = id, name = "cast_iron", base_color = [0.06, 0.09, 0.07], metallic = 0.0, roughness = 0.55)

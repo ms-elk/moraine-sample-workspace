@@ -12,7 +12,7 @@ STONE_SIZE_MAX = 0.12
 STONE_SINK_MAX = 0.03
 BED_STONES_MIN = 300
 FLANK_STONES_MIN = 60
-METER_GAUGE = 1.000
+STANDARD_GAUGE = 1.435
 SLEEPER_SEAT_AREA = 0.25 * 2.60
 
 # Bank
@@ -59,7 +59,7 @@ for stones, surface, least in [
     mo.assert_embedded(id = stones + "_overlap_freely", outputs = [stones], self = True)
 mo.assert_embedded(id = "bed_stones_in_sleepers", outputs = ["bed_stones", "sleepers"], min = 0)
 
-# Track at meter gauge, centered on the bed, every sleeper on the bed's top
+# Track at standard gauge, centered on the bed, every sleeper on the bed's top
 mo.assert_extent(id = "track_centered_x", outputs = ["sleepers"], measure = "center_x", value = 0.0)
 mo.assert_extent(id = "track_centered_z", outputs = ["sleepers"], measure = "center_z", value = 0.0)
 mo.assert_extent(id = "rails_centered_x", outputs = ["rails"], measure = "center_x", value = 0.0)

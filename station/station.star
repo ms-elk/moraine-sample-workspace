@@ -136,7 +136,7 @@ for part in ["rails", "sleepers"]:
 canopy = {}
 for part in ["roofs", "columns"]:
     output = part[:-1] if part == "roofs" else part
-    bay = mo.asset_ref(CANOPY, output, id = "bay_" + part)
+    bay = mo.asset_ref(CANOPY, output, id = "bay_" + part, overrides = {"bay_width": BAY_WIDTH})
     bay = mo.transform(bay, id = "bay_first_" + part, translate = [-(STANDARD_BAYS - 1) * BAY_WIDTH / 2, PLATFORM_TOP, CANOPY_Z])
     canopy[part] = mo.array(bay, id = "canopy_" + part, count = STANDARD_BAYS, step_translate = [BAY_WIDTH, 0.0, 0.0])
     end_x = CANOPY_HALF_SPAN - END_BAY_WIDTH / 2
@@ -144,7 +144,8 @@ for part in ["roofs", "columns"]:
     end_bay = mo.transform(end_bay, id = "end_bay_first_" + part, translate = [-end_x, PLATFORM_TOP, CANOPY_Z])
     canopy["end_" + part] = mo.array(end_bay, id = "canopy_end_" + part, count = 2, step_translate = [2 * end_x, 0.0, 0.0])
 
-# Lamps, their bases cast into the platform
+# Lamps, their bases cast into the platform: a pair beyond each end of
+# the canopy
 lamps = {}
 for part in ["post", "lantern"]:
     lamp = mo.asset_ref(
@@ -158,7 +159,8 @@ for part in ["post", "lantern"]:
         id = "lamp_first_" + part,
         translate = [LAMP_X[0], PLATFORM_TOP - LAMP_CAST, PLATFORM_FRONT_Z - PLATFORM_WIDTH + LAMP_INSET],
     )
-    lamps[part] = mo.array(lamp, id = "lamp_" + part + "s", count = len(LAMP_X), step_translate = [LAMP_X[1] - LAMP_X[0], 0.0, 0.0])
+    pair = mo.array(lamp, id = "lamp_" + part + "_pair", count = 2, step_translate = [LAMP_X[1] - LAMP_X[0], 0.0, 0.0])
+    lamps[part] = mo.array(pair, id = "lamp_" + part + "s", count = 2, step_translate = [LAMP_X[2] - LAMP_X[0], 0.0, 0.0])
 
 mo.output("slab", slab)
 mo.output("platform", platform)
@@ -180,8 +182,7 @@ mo.assert_contact(id = "rails_on_sleepers", outputs = ["line_rails", "line_sleep
 mo.assert_contact(id = "lanterns_on_posts", outputs = ["lamp_lanterns", "lamp_posts"], every = ["lamp_lanterns", "lamp_posts"])
 mo.assert_contact(id = "roofs_on_columns", outputs = ["all_roofs", "all_columns"], every = ["all_roofs", "all_columns"])
 
-# The lamps rise above the roof's underside, so the canopy stands
-# forward of them (CANOPY_Z), and its front columns stay off the band.
+# The canopy's front columns stay off the band (CANOPY_Z).
 mo.group("lamps", ["lamp_posts", "lamp_lanterns"])
 mo.assert_clearance(id = "roofs_clear_lamps", outputs = ["all_roofs", "lamps"], min = 0.02)
 mo.assert_clearance(id = "columns_clear_band", outputs = ["all_columns", "safety_band"], min = 0.005)

@@ -1,5 +1,5 @@
 # embankment - journal
-A stretch of line on an earth bank: crest and two flanks (earth), ballast bed and loose stones (ballast), one `track` panel at meter gauge.
+A stretch of line on an earth bank: crest and two flanks (earth), ballast bed and loose stones (ballast), one `track` panel at standard gauge.
 
 ## Entries
 ### requirements

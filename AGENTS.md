@@ -33,7 +33,7 @@ Every request I make in a session is a requirement unless it says
   - `ballast`          (0.38, 0.40, 0.45)  metallic 0.0  roughness 0.95  with a noise-type texture
   - `platform_concrete`(0.62, 0.60, 0.56)  metallic 0.0  roughness 0.85  with a noise-type texture
   - `platform_edge`    (0.85, 0.75, 0.15)  metallic 0.0  roughness 0.70  (safety yellow)
-  - `canopy_roof`      (0.45, 0.16, 0.10)  metallic 0.0  roughness 0.60  (oxide red)
+  - `canopy_roof`      (0.20, 0.20, 0.22)  metallic 0.0  roughness 0.60  (dark gray)
   - `earth`            (0.30, 0.26, 0.18)  metallic 0.0  roughness 1.00  with a noise-type texture
   - `tarmac`           (0.12, 0.12, 0.13)  metallic 0.0  roughness 0.95
 - Declare a knob only where a request names one.

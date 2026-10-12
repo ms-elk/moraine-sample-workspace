@@ -3,7 +3,8 @@ Platform with a canopy, lamps, and the running line in front: consumes `lamp_pos
 
 ## Entries
 ### layout
-- The canopy's z position was the agent's to choose: the lamps (4.00 tall from 0.05 below the platform's top) rise above the roof's underside (3.00 above it) at z = -1.5, so the roof must stand forward of them. `CANOPY_Z` 0.30 puts the roof's back edge 0.05 clear of the lamps' shafts and its front edge at the platform's face, and the front columns 0.01 off the safety band; both margins are agent asserts.
+- `CANOPY_Z` 0.30 was the agent's: the roof's front edge at the platform's face and the front columns 0.01 off the safety band (an agent assert), so the canopy cannot move forward.
+- The middle lamps stood at x = ±3 under the roof's back edge, their lanterns 0.44 above the roof top; the human's 0.50 lantern clearance could not hold there with the roof's height and position fixed, and the human moved those lamps out to x = ±11 rather than make the lamps taller or the roof lower.
 - `LINE_Z` 3.60 gives the near rail head 0.81 from the platform's face against the required 0.75.
 - `LAMP_FIXED_HEIGHT` 0.82 restates lamp_post's base, collar, glass and cap to turn the 4.00 height into its `shaft_length` knob; `lamp_height` catches a change upstream.
 - `STEP_THICKNESS` 0.10 was the agent's: a full-rise (0.200) step would put the bottom step on the slab with no room for a stringer under it, so the steps are thinner than the rise, leaving open risers and a 0.10 stringer column under step 0.
