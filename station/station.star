@@ -10,6 +10,7 @@ load(
     "LAMP_HEIGHT",
     "LAMP_INSET",
     "LAMP_X",
+    "LANTERN_GLOW",
     "PANEL_LENGTH",
     "PLATFORM_CENTER_Z",
     "PLATFORM_END_X",
@@ -37,6 +38,8 @@ CANOPY_Z = 0.3
 # lamp_post's base, collar, glass and cap: its overall height is the
 # shaft_length knob plus these.
 LAMP_FIXED_HEIGHT = 0.82
+# lamp_post's default `glass_emissive`, the warm white the night glass scales.
+LANTERN_WARM_WHITE = [1.0, 0.86, 0.66]
 STEP_THICKNESS = 0.10
 
 # Ground slab and platform
@@ -152,7 +155,11 @@ for part in ["post", "lantern"]:
         project = "lamp_post",
         output = part,
         id = "lamp_" + part,
-        overrides = {"shaft_length": LAMP_HEIGHT - LAMP_FIXED_HEIGHT},
+        overrides = {
+            "shaft_length": LAMP_HEIGHT - LAMP_FIXED_HEIGHT,
+            "glass_emissive": [c * LANTERN_GLOW for c in LANTERN_WARM_WHITE],
+        },
+        material_rename = {"lamp_glass": "lamp_glass_night"} if part == "lantern" else {},
     )
     lamp = mo.transform(
         lamp,

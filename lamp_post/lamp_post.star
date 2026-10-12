@@ -32,6 +32,14 @@ shaft_length = mo.param(
     step = 0.01,
     label = "Shaft length",
 )
+glass_emissive = mo.param(
+    "glass_emissive",
+    [1.0, 0.86, 0.66],
+    min = 0.0,
+    max = 100.0,
+    step = 0.01,
+    label = "Glass glow",
+)
 
 base_r = BASE_DIAMETER / 2
 shaft_r = SHAFT_DIAMETER / 2
@@ -107,7 +115,7 @@ post = mo.tag(
 )
 post = cast_iron("post_mat", post)
 
-lantern = lamp_glass("lantern_mat", glass)
+lantern = lamp_glass("lantern_mat", glass, glass_emissive)
 
 mo.output("post", post)
 mo.output("lantern", lantern)

@@ -28,6 +28,7 @@ Every request I make in a session is a requirement unless it says
   there; no part restates the numbers.
   - `cast_iron`        (0.06, 0.09, 0.07)  metallic 0.0  roughness 0.55  (painted dark green)
   - `lamp_glass`       (1.00, 0.85, 0.60)  metallic 0.0  roughness 0.10  emissive warm white; alpha your call
+  - `lamp_glass_night` (1.00, 0.85, 0.60)  metallic 0.0  roughness 0.10  emissive warm white at strength 100; alpha as `lamp_glass`
   - `rail_steel`       (0.55, 0.55, 0.57)  metallic 1.0  roughness 0.40
   - `sleeper_timber`   (0.16, 0.10, 0.06)  metallic 0.0  roughness 0.90  with a noise-type texture
   - `ballast`          (0.38, 0.40, 0.45)  metallic 0.0  roughness 0.95  with a noise-type texture
