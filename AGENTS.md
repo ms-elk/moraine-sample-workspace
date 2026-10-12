@@ -30,7 +30,7 @@ Every request I make in a session is a requirement unless it says
   - `lamp_glass`       (1.00, 0.85, 0.60)  metallic 0.0  roughness 0.10  emissive warm white; alpha your call
   - `rail_steel`       (0.55, 0.55, 0.57)  metallic 1.0  roughness 0.40
   - `sleeper_timber`   (0.16, 0.10, 0.06)  metallic 0.0  roughness 0.90  with a noise-type texture
-  - `ballast`          (0.38, 0.40, 0.45)  metallic 0.0  roughness 0.95
+  - `ballast`          (0.38, 0.40, 0.45)  metallic 0.0  roughness 0.95  with a noise-type texture
   - `platform_concrete`(0.62, 0.60, 0.56)  metallic 0.0  roughness 0.85  with a noise-type texture
   - `platform_edge`    (0.85, 0.75, 0.15)  metallic 0.0  roughness 0.70  (safety yellow)
   - `canopy_roof`      (0.45, 0.16, 0.10)  metallic 0.0  roughness 0.60  (oxide red)

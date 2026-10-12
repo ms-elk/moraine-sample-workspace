@@ -1,5 +1,5 @@
 load("lib/bank.star", "flank", "on_lattice", "slope_sheet")
-load("lib/materials.star", "ballast", "earth")
+load("lib/materials.star", "BALLAST_UV_SCALE", "ballast", "earth")
 load(
     "embankment.requirements.star",
     "BANK_LENGTH",
@@ -62,6 +62,7 @@ bed = mo.transform(
     id = "bed_place",
     translate = [0.0, bed_bottom + BED_HEIGHT / 2, 0.0],
 )
+bed = mo.unwrap(bed, id = "bed_uv", uv_scale = BALLAST_UV_SCALE)
 bed = ballast("bed_mat", bed)
 bed_surface = mo.transform(mo.grid(id = "bed_top_grid", size = [BED_LENGTH, BED_WIDTH]), id = "bed_top", translate = [0.0, bed_top, 0.0])
 
@@ -76,6 +77,7 @@ flat_to_flat = 2 * stone_r * math.cos(math.pi / STONE_SEGMENTS)
 stone = mo.sphere(id = "stone_sphere", radius = stone_r, segments = STONE_SEGMENTS, rings = 4)
 stone = mo.transform(stone, id = "stone_flatten", scale = [1.0, stone_flatten, 1.0])
 stone = mo.smooth_normals(stone, id = "stone_facets", angle_max_deg = 20.0)
+stone = mo.unwrap(stone, id = "stone_uv", uv_scale = BALLAST_UV_SCALE)
 stone = mo.transform(stone, id = "stone_lift", translate = [0.0, stone_flatten * stone_r - STONE_SINK, 0.0])
 stone = ballast("stone_mat", stone)
 jitter = [1.1 * STONE_SIZE_MIN / flat_to_flat, 1.0]
