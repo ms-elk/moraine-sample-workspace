@@ -96,3 +96,51 @@ mo.assert_extent(id = "lamp_cast_depth", faces = ["lamp_posts", "underside"], me
 mo.assert_embedded(id = "lamps_cast_into_platform", outputs = ["platform", "lamp_posts"])
 
 mo.budget(materials = 8)
+
+# Stair at the platform's +X end
+STAIR_STEPS = 5
+STEP_WIDTH = 2.00
+STEP_RISE = 0.200
+STEP_GOING = 0.280
+STRINGER_WIDTH = 0.10
+STEP_SEAT_AREA = 0.025
+
+PLATFORM_END_X = PLATFORM_LENGTH / 2
+PLATFORM_CENTER_Z = PLATFORM_FRONT_Z - PLATFORM_WIDTH / 2
+
+mo.group("stair_stringers", ["stair_stringer_back", "stair_stringer_front"])
+
+mo.assert_count(id = "stair_step_count", outputs = ["stair_steps"], value = STAIR_STEPS)
+mo.assert_extent(id = "stair_step_width", outputs = ["stair_steps"], measure = "size_z", every = True, value = STEP_WIDTH)
+mo.assert_extent(id = "stair_centered_z", outputs = ["stair_steps"], measure = "center_z", value = PLATFORM_CENTER_Z)
+for i in range(STAIR_STEPS):
+    mo.assert_extent(id = "step_%d_rise" % i, faces = ["stair_steps", "tread", i], measure = "max_y", value = SLAB_TOP + (i + 1) * STEP_RISE)
+    mo.assert_extent(
+        id = "step_%d_going" % i,
+        faces = ["stair_steps", "back", i],
+        measure = "min_x",
+        value = PLATFORM_END_X + (STAIR_STEPS - 1 - i) * STEP_GOING,
+    )
+mo.assert_extent(id = "top_tread_flush", faces = ["stair_steps", "tread", STAIR_STEPS - 1], measure = "max_y", value = PLATFORM_TOP)
+mo.assert_mated(
+    id = "top_step_on_platform_end",
+    faces = [["platform", "end_pos_x"], ["stair_steps", "back", STAIR_STEPS - 1]],
+    mode = "contained",
+)
+
+mo.assert_extent(id = "stringer_width", outputs = ["stair_stringers"], measure = "size_z", every = True, value = STRINGER_WIDTH)
+mo.assert_extent(id = "stringer_back_under_step_end", outputs = ["stair_stringer_back"], measure = "min_z", value = PLATFORM_CENTER_Z - STEP_WIDTH / 2)
+mo.assert_extent(id = "stringer_front_under_step_end", outputs = ["stair_stringer_front"], measure = "max_z", value = PLATFORM_CENTER_Z + STEP_WIDTH / 2)
+mo.assert_contact(
+    id = "stringers_on_slab",
+    outputs = ["stair_stringers", "slab"],
+    every = ["stair_stringers"],
+    min_area = STAIR_STEPS * STEP_GOING * STRINGER_WIDTH,
+)
+for side in ["back", "front"]:
+    mo.assert_contact(
+        id = "steps_seated_on_stringer_" + side,
+        outputs = ["stair_steps", "stair_stringer_" + side],
+        every = ["stair_steps", "stair_stringer_" + side],
+        min_area = STEP_SEAT_AREA,
+    )

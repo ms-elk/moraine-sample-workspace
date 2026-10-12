@@ -11,6 +11,8 @@ load(
     "LAMP_INSET",
     "LAMP_X",
     "PANEL_LENGTH",
+    "PLATFORM_CENTER_Z",
+    "PLATFORM_END_X",
     "PLATFORM_FRONT_Z",
     "PLATFORM_HEIGHT",
     "PLATFORM_LENGTH",
@@ -20,8 +22,13 @@ load(
     "SLAB_LENGTH",
     "SLAB_THICKNESS",
     "SLAB_TOP",
+    "STAIR_STEPS",
     "STANDARD_BAYS",
     "STANDARD_GAUGE",
+    "STEP_GOING",
+    "STEP_RISE",
+    "STEP_WIDTH",
+    "STRINGER_WIDTH",
 )
 
 CANOPY = "subassets/canopy_bay.star"
@@ -30,6 +37,7 @@ CANOPY_Z = 0.3
 # lamp_post's base, collar, glass and cap: its overall height is the
 # shaft_length knob plus these.
 LAMP_FIXED_HEIGHT = 0.82
+STEP_THICKNESS = 0.10
 
 # Ground slab and platform
 slab = mo.transform(
@@ -42,6 +50,7 @@ slab = tarmac("slab_mat", slab)
 
 platform = mo.box(id = "platform_box", size = [PLATFORM_LENGTH, PLATFORM_HEIGHT, PLATFORM_WIDTH])
 platform = mo.tag(platform, id = "platform_top", name = "top", select = {"normal_y": {"gt": 0.9}})
+platform = mo.tag(platform, id = "platform_end_pos_x", name = "end_pos_x", select = {"normal_x": {"gt": 0.9}})
 platform = mo.unwrap(platform, id = "platform_uv", uv_scale = 1.0)
 platform = platform_concrete("platform_mat", platform)
 platform = mo.place(
@@ -63,6 +72,57 @@ band = mo.place(
     mode = "on_top",
     offset = [0.0, 0.0, PLATFORM_FRONT_Z - BAND_WIDTH / 2],
 )
+
+# Stair at the platform's +X end: each stringer is a sawtooth whose
+# column k carries step k (0 at the bottom). Each cutter clears
+# everything above one seat and out past the foot, so the cuts nest
+# and no cut face lands on an earlier one.
+flight = STAIR_STEPS * STEP_GOING
+stringer_height = STAIR_STEPS * STEP_RISE - STEP_THICKNESS
+stringer = mo.transform(
+    mo.box(id = "stringer_box", size = [flight, stringer_height, STRINGER_WIDTH]),
+    id = "stringer_local",
+    translate = [flight / 2, stringer_height / 2, 0.0],
+)
+for k in range(STAIR_STEPS - 1):
+    seat = (k + 1) * STEP_RISE - STEP_THICKNESS
+    start = (STAIR_STEPS - 1 - k) * STEP_GOING
+    cutter = mo.transform(
+        mo.box(id = "stringer_cutter_box_%d" % k, size = [flight - start + 0.1, stringer_height - seat + 0.1, STRINGER_WIDTH + 0.2]),
+        id = "stringer_cutter_%d" % k,
+        translate = [(start + flight + 0.1) / 2, (seat + stringer_height + 0.1) / 2, 0.0],
+    )
+    stringer = mo.boolean(stringer, cutter, id = "stringer_cut_%d" % k, mode = "difference")
+stringer = mo.tag(stringer, id = "stringer_first_seat", name = "first_seat", select = {"normal_y": {"gt": 0.9}, "center_y": {"lt": STEP_RISE}})
+stringer = mo.unwrap(stringer, id = "stringer_uv", uv_scale = 1.0)
+stringer = platform_concrete("stringer_mat", stringer)
+stringer = mo.place(
+    base = slab,
+    part = stringer,
+    id = "stringer_place",
+    anchor = "top",
+    mode = "on_top",
+    offset = [PLATFORM_END_X + flight / 2, 0.0, PLATFORM_CENTER_Z - (STEP_WIDTH - STRINGER_WIDTH) / 2],
+)
+# One prototype for both stringers, as two outputs so that each one's
+# bearing under every step is judged on its own.
+stringer_back = mo.array(stringer, id = "stair_stringer_back", count = 1)
+stringer_front = mo.transform(stringer_back, id = "stair_stringer_front", translate = [0.0, 0.0, STEP_WIDTH - STRINGER_WIDTH])
+
+step = mo.box(id = "step_box", size = [STEP_GOING, STEP_THICKNESS, STEP_WIDTH])
+step = mo.tag(step, id = "step_tread", name = "tread", select = {"normal_y": {"gt": 0.9}})
+step = mo.tag(step, id = "step_back", name = "back", select = {"normal_x": {"lt": -0.9}})
+step = mo.unwrap(step, id = "step_uv", uv_scale = 1.0)
+step = platform_concrete("step_mat", step)
+step = mo.place(
+    base = stringer,
+    part = step,
+    id = "step_place",
+    anchor = "first_seat",
+    mode = "on_top",
+    offset = [0.0, 0.0, (STEP_WIDTH - STRINGER_WIDTH) / 2],
+)
+steps = mo.array(step, id = "stair_steps", count = STAIR_STEPS, step_translate = [-STEP_GOING, STEP_RISE, 0.0])
 
 # Line: two track panels, end to end. Transforms stay authored, since
 # no op places a referenced kit.
@@ -103,6 +163,9 @@ for part in ["post", "lantern"]:
 mo.output("slab", slab)
 mo.output("platform", platform)
 mo.output("safety_band", band)
+mo.output("stair_steps", steps)
+mo.output("stair_stringer_back", stringer_back)
+mo.output("stair_stringer_front", stringer_front)
 mo.output("line_rails", line["rails"])
 mo.output("line_sleepers", line["sleepers"])
 mo.output("canopy_roofs", canopy["roofs"])
