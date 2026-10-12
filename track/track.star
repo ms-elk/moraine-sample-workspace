@@ -20,14 +20,14 @@ load(
 )
 
 EMBED = 0.002
-GRAIN_STRETCH = 10.0
+GRAIN_STRETCH = 20.0
 
 gauge = mo.param("gauge", GAUGE, min = GAUGE_MIN, max = GAUGE_MAX, step = 0.001, label = "Gauge")
 
 first_sleeper_x = -RAIL_LENGTH / 2 + FIRST_SLEEPER_OFFSET
 
 # Sleepers: grain runs along the length, so the box is unwrapped at a
-# tenth of its length and stretched back.
+# fraction of its length and stretched back.
 sleeper = mo.box(id = "sleeper_box", size = [SLEEPER_WIDTH, SLEEPER_HEIGHT, SLEEPER_LENGTH / GRAIN_STRETCH])
 sleeper = mo.unwrap(sleeper, id = "sleeper_uv", uv_scale = 4.0)
 sleeper = mo.transform(sleeper, id = "sleeper_stretch", scale = [1.0, 1.0, GRAIN_STRETCH])
