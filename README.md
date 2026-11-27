@@ -113,7 +113,7 @@ moraine validate .
 
 Exports are not committed; they are regenerated from the recipes. The
 GLBs on the [releases page](https://github.com/ms-elk/moraine-sample-workspace/releases)
-were produced with `moraine3d` 0.2.1 from a cleared cache, using
+were produced with `moraine3d` 0.3.0 from a cleared cache, using
 `moraine export` for each project. Under that version, fresh exports
 match the published `SHA256SUMS` byte for byte.
 

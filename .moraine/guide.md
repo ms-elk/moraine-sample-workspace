@@ -36,11 +36,10 @@ cylinder, sphere, grid) shaped by displacement, extrusion,
 revolution, booleans, chamfers, and instancing. Check the subject
 against what has **no operator** before committing to it:
 
-- Profiles revolve but do not extrude: `revolve` sweeps an open
-  `[radius, y]` polyline a full 360° around +Y (cones, tapers,
-  turned profiles); a drawn outline cannot be extruded along a line,
-  and partial revolutions have no op — linear profiled parts stay
-  boolean combinations of the primitive stock.
+- A drawn outline turns around +Y with `revolve` (cones, tapers,
+  turned profiles, a part turn by `arc_deg`) and runs along a line
+  or a polyline with `sweep`; neither takes an outline with a hole,
+  which is two solids and a `boolean`.
 - Outputs must be closed solids: an open surface (a `grid`, a
   displaced sheet) cannot be an output, so terrain is a displaced
   sheet **plus the `extrude` that closes it**; a scatter *target*
@@ -63,14 +62,15 @@ the plan commits (each row's limit changes plans, not parameters):
 | rest a part on a surface | `place` | on-top only, single horizontal plane |
 | butt / fit / dock faces | `mate` + `mated` | planar face sets; a contained joint stays authored, checked by `mated` `mode: "contained"` |
 | select faces | *Face predicates* | triangles, not logical faces; groups drop on topology rebuilds |
-| repeat parts | `array` / `scatter` | transform frame; stochastic outputs cannot become knobs |
+| repeat parts | `array` / `scatter` | transform frame; an `array` of `count` 0 leaves its output absent; stochastic outputs cannot become knobs |
 | terrain / relief | `grid`, `noise_displace`, `extrude`, `boolean` | open surfaces cannot be outputs |
 | chamfer edges | `bevel` | convex solids only |
-| turn a rotational part | `revolve` | the solid always contains the axis — a ring / torus has no op |
+| turn a rotational part | `revolve` | an open profile closes to the axis, a ring / torus is `closed = True`; `segments` steps span `arc_deg`, not the circle |
+| run a profile along a path | `sweep` | the section never twists about the path, so a loop must bring it back unturned (a planar one does); the solid may not touch itself away from a bend |
 | texture a surface | *patterns* + `unwrap` | box/planar projection only; one source per slot |
 | assign materials | `material` | name is the export identity; a factor knob on a shared name is never live |
 | place another project's asset | `asset_ref` | an override reaching a material needs `material_rename` |
-| state a requirement relative to a knob or another part | `extent` + `requirements` | a threshold is a number: `param_value` takes no arithmetic, no assert compares two measurements — substitute, and say which |
+| state a requirement relative to a knob or another part | `offset` + `requirements` | `mo.assert_offset` reads one output's position from another's along one axis, not a size, a copy, or a face; a threshold is a number, and `param_value` takes a `scale` and an `offset` and no other arithmetic — substitute what neither states, and say which; a part the human made optional is declared with `mo.optional` |
 
 ## Workspace & projects {#workspace}
 
@@ -179,12 +179,12 @@ watching, on the project the human picks) → subject
 stages working:
 
 - **Author assert-first** — the test-first habit, applied to assets.
-  Before building geometry, list every verifiable requirement in the
-  request, then land each as asset content in the same edit that
-  introduces the output it names. Solid-based checks stay red until
-  the outputs close, by design. An elevated output passes the
-  ground checks with no waiver, but nothing verifies what holds it
-  up: write the `contact`/`place` (or `mated`) in the same edit.
+  Before building geometry, write every verifiable requirement of the
+  request into the requirements file, red until its output exists.
+  Your own invariants land with the output they name. Solid-based
+  checks stay red until the outputs close, by design. An elevated
+  output passes the ground checks with no waiver, but nothing verifies
+  what holds it up: write the `contact`/`place` (or `mated`) with it.
   Never waive a sunk part — fix penetration by translating; waive
   `not_sunk` only for deliberate below-ground geometry, asset-level
   `grounded` only for out-of-asset support. Build from the
@@ -359,8 +359,8 @@ cheapest first.
 
 1. `moraine validate` — the built-in checks (contract: `moraine docs
    checks`) plus your asserts, which gate the same way; run it first.
-   `--failures-only` collapses healthy outputs and `unchecked` to
-   counts. After editing a project that other projects reference,
+   The report is counts and the failing entries; `--full` adds the
+   asset's green ones. After editing a project that other projects reference,
    validate the **workspace root** — the sweep is the only check that
    reaches the consumers (`not_swept` names assets it could not).
 2. `moraine stats` — verts/tris/bounds, for reading; a dimension
